@@ -117,8 +117,8 @@ export default function Page() {
                             href={getQcmGenerationHref()}
                         >
                             <Button
-                                onClick={() => {}}
-                                disabled={selectedExam === null || nQuestions === null}
+                                onClick={() => {console.log(nQuestions)}}
+                                disabled={selectedExam === null || Number.isNaN(nQuestions) || nQuestions === 0}
                             >
                                 Commencer
                             </Button>

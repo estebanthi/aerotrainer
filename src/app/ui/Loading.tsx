@@ -5,6 +5,7 @@ import {CircleLoader} from "react-spinners";
 const Loading: React.FC = () => {
 
     const [message, setMessage] = React.useState<string | null>(null)
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             setMessage("La connexion est trop lente, veuillez réessayer plus tard.")
@@ -12,11 +13,10 @@ const Loading: React.FC = () => {
         return () => clearTimeout(timeout)
     }, []);
 
-
     return (
-        <div className="flex flex-col items-center justify-center gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 dark:text-white">
             <p>Chargement...</p>
-            <CircleLoader color={'#000000'} loading={true} size={50}/>
+            <CircleLoader color="currentColor" loading={true} size={50}/>
             {message && <p>{message}</p>}
         </div>
     );

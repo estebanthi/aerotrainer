@@ -32,7 +32,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'S
         <div className="relative inline-block w-64">
             <button
                 onClick={toggleDropdown}
-                className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center"
+                className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center dark:bg-blueish-600 dark:border-blueish-800 dark:text-blueish-100 dark:focus:ring-blue-300 dark:focus:border-blue-300"
             >
                 <span>{selected || placeholder}</span>
                 <svg
@@ -51,13 +51,13 @@ const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'S
                 </svg>
             </button>
             {isOpen && (
-                <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10">
-                    <ul className="py-1 text-gray-700">
+                <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10 dark:bg-blueish-600">
+                    <ul className="py-1 text-gray-700 dark:text-blueish-100">
                         {options.map((option) => (
                             <li
                                 key={option}
                                 onClick={() => handleOptionClick(option)}
-                                className="cursor-pointer hover:bg-gray-100 px-4 py-2"
+                                className="cursor-pointer hover:bg-gray-100 px-4 py-2 dark:hover:bg-blueish-700"
                             >
                                 {option}
                             </li>

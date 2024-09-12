@@ -85,15 +85,16 @@ export default function Page() {
                                 <div className="text-lg font-semibold mb-4 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
                                     <div>
                                         <span
-                                            className="text-blue-600">Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length} ({Math.round(Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length / questions.length * 100)}%)
+                                            className="text-blue-600 dark:text-blueish-200">
+                                            Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length} ({Math.round(Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length / questions.length * 100)}%)
                                     </div>
                                     <button
-                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
+                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors dark:bg-blueish-600 dark:hover:bg-blueish-700"
                                         onClick={handleClickOnRetry}
                                     >Recommencer cette série
                                     </button>
                                     <button
-                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
+                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors dark:bg-blueish-600 dark:hover:bg-blueish-700"
                                         onClick={() => window.location.reload()}
                                     >Nouvelle série
                                     </button>
@@ -119,9 +120,10 @@ export default function Page() {
                             {/* Display progression and validate button */}
                             {!correctionMode && <div
                                 className="fixed bottom-0 right-0 bg-white border border-gray-300 rounded-lg shadow-md p-4">
-                                <div className="text-lg font-semibold mb-4">
+                                <div className="text-lg font-semibold mb-4 dark:text-blueish-300">
                                     <span
-                                        className="text-blue-600">Progression:</span> {Object.keys(selectedAnswers).length}/{questions.length}
+                                        className="text-blue-600 dark:text-blueish-200">
+                                        Progression:</span> {Object.keys(selectedAnswers).length}/{questions.length}
                                 </div>
                                 <Button onClick={validateAnswers}>Valider</Button>
                             </div>}
