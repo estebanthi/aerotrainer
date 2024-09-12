@@ -6,6 +6,7 @@ import {useEffect, useState} from "react";
 import {fetchExams, fetchModules, fetchQuestions} from "@/app/lib/data";
 import {Question, Exam, Module} from "@/app/lib/data";
 import Button from "@/app/ui/Button";
+import Loading from "@/app/ui/Loading";
 
 
 export default function Page() {
@@ -21,18 +22,27 @@ export default function Page() {
     const nQuestions = searchParams.get('nQuestions') ? parseInt(searchParams.get('nQuestions') as string) : 0
 
     const exam = exams.find(exam => exam.id === examId)
-    const module = modules.find(module => module.id === moduleId)
+    const module_ = modules.find(module => module.id === moduleId)
 
     // State
     const [selectedAnswers, setSelectedAnswers] = useState<{[key: number]: string}>({})
     const [correctionMode, setCorrectionMode] = useState<boolean>(false)
 
-    // Fetch questions, exams and modules on page load
+    // Fetch questions, exams and modules on page load with retry mechanism
     useEffect(() => {
-        fetchQuestions(examId, moduleId, nQuestions).then(setQuestions)
-        fetchExams().then(setExams)
-        fetchModules().then(setModules)
-    }, [])
+
+        async function fetchData() {
+            try {
+                setQuestions(await fetchQuestions(examId, moduleId, nQuestions))
+                setExams(await fetchExams())
+                setModules(await fetchModules())
+            } catch (err) {
+                setTimeout(fetchData, 10000)
+            }
+        }
+
+        fetchData()
+    }, [examId, moduleId, nQuestions])
 
     const handleAnswerSelect = (noQuestion: number, selectedAnswer: string) => {
         if (selectedAnswer === "") {  // if the answer is unselected, remove it from the selected answers
@@ -59,55 +69,63 @@ export default function Page() {
     }
 
     return (
-        <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-            <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start w-2/3">
+        <div className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+            <main className="flex flex-col gap-8 items-center">
+                    {
+                        exams.length === 0 ? <Loading/> : <>
 
-                {/* Display exam and module names */}
-                <h1 className="text-2xl sm:text-3xl">{exam?.name}</h1>
-                {module &&
-                    <h2 className="text-lg sm:text-xl">{module.name}</h2>
-                }
+                            {/* Display exam and module names */}
+                            <h1 className="text-2xl sm:text-3xl">{exam?.name}</h1>
+                            {module_ &&
+                                <h2 className="text-lg sm:text-xl">{module_.name}</h2>
+                            }
 
-                {/* Display score and retry button */}
-                {correctionMode &&
-                    <div className="text-lg font-semibold mb-4">
-                        <span className="text-blue-600">Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length}
-                        <button
-                            className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
-                            onClick={handleClickOnRetry}
-                        >Recommencer cettes série</button>
-                        <button
-                            className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
-                            onClick={() => window.location.reload()}
-                        >Nouvelle série</button>
-                </div>}
+                            {/* Display score and retry button */}
+                            {correctionMode &&
+                                <div className="text-lg font-semibold mb-4">
+                                    <span
+                                        className="text-blue-600">Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length} ({Math.round(Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length / questions.length * 100)}%)
+                                    <button
+                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
+                                        onClick={handleClickOnRetry}
+                                    >Recommencer cettes série
+                                    </button>
+                                    <button
+                                        className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
+                                        onClick={() => window.location.reload()}
+                                    >Nouvelle série
+                                    </button>
+                                </div>}
 
-                {/* Display questions */}
-                <div className="grid grid-cols-1 gap-8">
-                    {questions.map((qcm) => (
-                        <QCM
-                            key={qcm.noQuestion}
-                            question={qcm.text}
-                            number={qcm.noQuestion}
-                            explanation={qcm.explication}
-                            options={[qcm.goodAnswer, ...qcm.wrongAnswers]}
-                            image_url={qcm.imageUrl}
-                            onSelect={(selectedAnswer) => handleAnswerSelect(qcm.noQuestion, selectedAnswer)}
-                            selectedAnswer={selectedAnswers[qcm.noQuestion] || null}
-                            correctionMode={correctionMode}
-                        />
-                    ))}
-                </div>
+                            {/* Display questions */}
+                            <div className="grid grid-cols-1 gap-8">
+                                {questions.map((qcm) => (
+                                    <QCM
+                                        key={qcm.noQuestion}
+                                        question={qcm.text}
+                                        number={qcm.noQuestion}
+                                        explanation={qcm.explication}
+                                        options={[qcm.goodAnswer, ...qcm.wrongAnswers]}
+                                        image_url={qcm.imageUrl}
+                                        onSelect={(selectedAnswer) => handleAnswerSelect(qcm.noQuestion, selectedAnswer)}
+                                        selectedAnswer={selectedAnswers[qcm.noQuestion] || null}
+                                        correctionMode={correctionMode}
+                                    />
+                                ))}
+                            </div>
 
-                {/* Display progression and validate button */}
-                {!correctionMode && <div className="fixed bottom-0 right-0 bg-white border border-gray-300 rounded-lg shadow-md p-4">
-                    <div className="text-lg font-semibold mb-4">
-                        <span className="text-blue-600">Progression:</span> {Object.keys(selectedAnswers).length}/{questions.length}
-                    </div>
-                    <Button onClick={validateAnswers}>Valider</Button>
-                </div>}
-
-            </main>
+                            {/* Display progression and validate button */}
+                            {!correctionMode && <div
+                                className="fixed bottom-0 right-0 bg-white border border-gray-300 rounded-lg shadow-md p-4">
+                                <div className="text-lg font-semibold mb-4">
+                                    <span
+                                        className="text-blue-600">Progression:</span> {Object.keys(selectedAnswers).length}/{questions.length}
+                                </div>
+                                <Button onClick={validateAnswers}>Valider</Button>
+                            </div>}
+                        </>
+                    }
+                </main>
         </div>
-    );
+);
 }

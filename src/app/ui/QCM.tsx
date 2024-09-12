@@ -55,7 +55,7 @@ const QCM: React.FC<QCMProps> = ({ question, number, explanation, options, onSel
                         <span
                             onClick={() => handleImageClick(image_url)}
                             className="cursor-pointer text-blue-600 whitespace-nowrap hover:bg-gray-100 p-2 rounded-lg transition-colors duration-300 ease-in-out"
-                        >Voir l'annexe</span>
+                        >Voir l&apos;annexe</span>
                     )
                 }
             </div>

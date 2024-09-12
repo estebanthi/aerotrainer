@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
+import {Suspense} from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,14 +27,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
+    <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Link href="/">
-            <span className="fixed top-1/2 left-10 transform -translate-y-1/2 text-2xl font-bold">Accueil</span>
-        </Link>
-        {children}
-      </body>
+    >
+    <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between">
+        <div className="flex items-center">
+            <h1 className="text-2xl font-bold text-gray-900">Aero Trainer</h1>
+        </div>
+        <nav className="space-x-4">
+            <Link href="/">
+                <span className="text-gray-700 hover:text-blue-500 transition-colors">Accueil</span>
+            </Link>
+        </nav>
+    </header>
+    <Suspense fallback={<div>Chargement...</div>}>{children}</Suspense>
+    </body>
     </html>
   );
 }
