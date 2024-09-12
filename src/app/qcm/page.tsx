@@ -7,6 +7,7 @@ import {fetchExams, fetchModules, fetchQuestions} from "@/app/lib/data";
 import {Question, Exam, Module} from "@/app/lib/data";
 import Button from "@/app/ui/Button";
 import Loading from "@/app/ui/Loading";
+import Link from "next/link";
 
 
 export default function Page() {
@@ -72,7 +73,7 @@ export default function Page() {
         <div className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
             <main className="flex flex-col gap-8 items-center">
                     {
-                        exams.length === 0 ? <Loading/> : <>
+                        exams.length === 0 ? <Loading/> : (questions.length === 0 ? <p className="text-lg">Aucune question chargée, veuillez réessayer. Retournez à l&aposaccueil en cliquant <Link href="/" className="text-blue-600 dark:text-blueish-200">ici</Link>.</p> : <>
 
                             {/* Display exam and module names */}
                             <h1 className="text-2xl sm:text-3xl">{exam?.name}</h1>
@@ -127,7 +128,7 @@ export default function Page() {
                                 </div>
                                 <Button onClick={validateAnswers}>Valider</Button>
                             </div>}
-                        </>
+                        </>)
                     }
                 </main>
         </div>
