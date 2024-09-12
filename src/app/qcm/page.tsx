@@ -82,13 +82,15 @@ export default function Page() {
 
                             {/* Display score and retry button */}
                             {correctionMode &&
-                                <div className="text-lg font-semibold mb-4">
-                                    <span
-                                        className="text-blue-600">Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length} ({Math.round(Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length / questions.length * 100)}%)
+                                <div className="text-lg font-semibold mb-4 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+                                    <div>
+                                        <span
+                                            className="text-blue-600">Score:</span> {Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length}/{questions.length} ({Math.round(Object.keys(selectedAnswers).filter((questionNo) => selectedAnswers[parseInt(questionNo)] === questions.find(qcm => qcm.noQuestion === parseInt(questionNo))?.goodAnswer).length / questions.length * 100)}%)
+                                    </div>
                                     <button
                                         className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
                                         onClick={handleClickOnRetry}
-                                    >Recommencer cettes série
+                                    >Recommencer cette série
                                     </button>
                                     <button
                                         className="bg-blue-600 text-white p-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
