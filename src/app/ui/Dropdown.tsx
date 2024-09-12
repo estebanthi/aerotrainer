@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 interface DropdownProps {
     options: string[];
@@ -15,6 +15,18 @@ const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'S
         onSelect(option);
         setIsOpen(false);
     };
+
+    useEffect(() => {
+        const handleClick = (e: MouseEvent) => {
+            const target = e.target as HTMLElement;
+            if (!target.closest('.relative')) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClick);
+        return () => document.removeEventListener('click', handleClick);
+    }, []);
 
     return (
         <div className="relative inline-block w-64">
