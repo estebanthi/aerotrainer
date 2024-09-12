@@ -74,7 +74,7 @@ const QCM: React.FC<QCMProps> = ({ question, number, explanation, options, onSel
                                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-blueish-700 dark:text-blueish-100 dark:hover:bg-blueish-800'
                         }`}
                     >
-                        {option}
+                        {options && option.charAt(0).toUpperCase() + option.slice(1)}
                     </div>
                 ))}
             </div>
