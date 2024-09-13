@@ -2,6 +2,7 @@
 
 import { signIn} from "@/auth";
 import { AuthError } from 'next-auth';
+import { register } from "@/app/lib/data";
 
 
 export async function authenticate(
@@ -20,5 +21,23 @@ export async function authenticate(
             }
         }
         throw error;
+    }
+}
+
+
+export async function register_(
+    prevState: string | undefined,
+    formData: FormData,
+) {
+    try {
+        const email = formData.get('email') as string;
+        const password = formData.get('password') as string;
+
+        await register(email, password);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            return error.message;
+        }
     }
 }

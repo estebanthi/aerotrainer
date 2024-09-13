@@ -5,7 +5,6 @@ import Link from "next/link";
 import {Suspense} from "react";
 import {auth, signOut} from "@/auth";
 import AuthWrapper from "@/app/auth_wrapper";
-import {redirect} from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

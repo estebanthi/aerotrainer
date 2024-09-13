@@ -148,3 +148,25 @@ export async function login(username: string, password: string): Promise<User | 
         }
     }) : null
 }
+
+
+export async function register(email: string, password: string): Promise<User | string> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+    });
+    if (res.status === 200) {
+        return res.json().then((user: UserApi) => {
+            return {
+                id: user.id.toString(),
+                email: user.username
+            }
+        })
+    }
+    else {
+        throw Error(await res.json().then(error => error.error))
+    }
+}

@@ -16,11 +16,11 @@ export const authConfig = {
             }
             return true;
         },
-        async session({ session, token, user }) {
+        async session({ session, token }) {
             session.user = token.user as User;
             return session;
         },
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user }) {
             if (user) {
                 token.user = user;
             }
