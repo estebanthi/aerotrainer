@@ -5,6 +5,7 @@ import Link from "next/link";
 import {Suspense} from "react";
 import {auth, signOut} from "@/auth";
 import AuthWrapper from "@/app/auth_wrapper";
+import {redirect} from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -46,16 +47,20 @@ export default async function RootLayout({
                     Accueil
                 </span>
             </Link>
-            {session && <form
+            {session ? <form
                 action={async () => {
                     'use server';
-                    await signOut();
+                    await signOut({redirectTo: "/"});
                 }}
             >
-                <button className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100" type="submit">
+                <button className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
                     Déconnexion
                 </button>
-            </form>}
+            </form> : <Link href="/login">
+                <span className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
+                    Connexion
+                </span>
+            </Link>}
         </nav>
     </header>
     <Suspense fallback={<div>Chargement...</div>}>{children}</Suspense>
