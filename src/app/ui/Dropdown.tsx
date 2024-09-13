@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {text} from "node:stream/consumers";
 
 interface DropdownProps {
     options: string[];

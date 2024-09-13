@@ -44,7 +44,7 @@ export default function Page() {
         }
 
         fetchData()
-    }, [examId, moduleId, nQuestions])
+    }, [examId, moduleId, collectionId, nQuestions])
 
     const handleAnswerSelect = (noQuestion: number, selectedAnswer: string) => {
         if (selectedAnswer === "") {  // if the answer is unselected, remove it from the selected answers
