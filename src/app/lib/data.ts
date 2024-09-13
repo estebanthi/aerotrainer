@@ -25,6 +25,11 @@ interface CollectionApi {
     module_id: number;
 }
 
+interface UserApi {
+    id: number;
+    username: string;
+}
+
 export interface Exam {
     id: number;
     name: string;
@@ -52,6 +57,10 @@ export interface Collection {
     moduleId: number;
 }
 
+export interface User {
+    id: string;
+    email: string;
+}
 
 export async function fetchExams(): Promise<Exam[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams`);
@@ -121,4 +130,21 @@ export async function fetchCollections(): Promise<Collection[]> {
             }
         })
     })
+}
+
+
+export async function login(username: string, password: string): Promise<User | null> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
+    return res.status === 200 ? res.json().then((user: UserApi) => {
+        return {
+            id: user.id.toString(),
+            email: user.username
+        }
+    }) : null
 }
