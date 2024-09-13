@@ -53,11 +53,11 @@ export default async function RootLayout({
                     await signOut({redirectTo: "/"});
                 }}
             >
-                <button className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
+                <button className="text-gray-700 hover:text-blue-300 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
                     Déconnexion
                 </button>
             </form> : <Link href="/login">
-                <span className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
+                <span className="text-gray-700 hover:text-blue-300 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
                     Connexion
                 </span>
             </Link>}
