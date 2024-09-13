@@ -20,6 +20,7 @@ export default function Page() {
 
     const examId = searchParams.get('examId') ? parseInt(searchParams.get('examId') as string) : null
     const moduleId = searchParams.get('moduleId') ? parseInt(searchParams.get('moduleId') as string) : null
+    const collectionId = searchParams.get('collectionId') ? parseInt(searchParams.get('collectionId') as string) : null
     const nQuestions = searchParams.get('nQuestions') ? parseInt(searchParams.get('nQuestions') as string) : 0
 
     const exam = exams.find(exam => exam.id === examId)
@@ -34,7 +35,7 @@ export default function Page() {
 
         async function fetchData() {
             try {
-                setQuestions(await fetchQuestions(examId, moduleId, nQuestions))
+                setQuestions(await fetchQuestions(examId, moduleId, collectionId, nQuestions))
                 setExams(await fetchExams())
                 setModules(await fetchModules())
             } catch (err) {

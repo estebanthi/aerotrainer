@@ -18,6 +18,13 @@ interface QuestionApi {
     image_url: string | null;
 }
 
+interface CollectionApi {
+    id: number;
+    name: string;
+    exam_class_id: number;
+    module_id: number;
+}
+
 export interface Exam {
     id: number;
     name: string;
@@ -36,6 +43,13 @@ export interface Question {
     goodAnswer: string;
     wrongAnswers: string[];
     imageUrl: string | null;
+}
+
+export interface Collection {
+    id: number;
+    name: string;
+    examId: number;
+    moduleId: number;
 }
 
 
@@ -64,19 +78,21 @@ export async function fetchModules(): Promise<Module[]> {
     })
 }
 
-export async function fetchQuestionsCount(examId: number | null, moduleId: number | null): Promise<number> {
+export async function fetchQuestionsCount(examId: number | null, moduleId: number | null, collectionId: number | null): Promise<number> {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/questions/count?`
     examId && (url += `exam_id=${examId}&`)
     moduleId && (url += `module_id=${moduleId}&`)
+    collectionId && (url += `collection_id=${collectionId}&`)
     const res = await fetch(url);
     return res.json();
 }
 
 
-export async function fetchQuestions(examId: number | null, moduleId: number | null, nQuestions: number): Promise<Question[]> {
+export async function fetchQuestions(examId: number | null, moduleId: number | null, collectionId: number | null, nQuestions: number): Promise<Question[]> {
     let url = `${process.env.NEXT_PUBLIC_API_URL}/questions?limit=${nQuestions}`
     examId && (url += `&exam_id=${examId}&`)
     moduleId && (url += `&module_id=${moduleId}&`)
+    collectionId && (url += `&collection_id=${collectionId}&`)
     const res = await fetch(url);
     return res.json().then((questions: QuestionApi[]) => {
         return questions.map(question => {
@@ -87,6 +103,21 @@ export async function fetchQuestions(examId: number | null, moduleId: number | n
                 goodAnswer: question.good_answer,
                 wrongAnswers: question.wrong_answers,
                 imageUrl: question.image_url
+            }
+        })
+    })
+}
+
+
+export async function fetchCollections(): Promise<Collection[]> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections`);
+    return res.json().then((collections: CollectionApi[]) => {
+        return collections.map(collection => {
+            return {
+                id: collection.id,
+                name: collection.name,
+                examId: collection.exam_class_id,
+                moduleId: collection.module_id
             }
         })
     })

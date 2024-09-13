@@ -1,13 +1,15 @@
 import React, {useEffect, useState} from 'react';
+import {text} from "node:stream/consumers";
 
 interface DropdownProps {
     options: string[];
     selected?: string;
     placeholder?: string;
     onSelect: (value: string) => void;
+    textColor?: string;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'Select an option', onSelect }) => {
+const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'Select an option', onSelect, textColor }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => setIsOpen(!isOpen);
@@ -34,7 +36,9 @@ const Dropdown: React.FC<DropdownProps> = ({ options, selected, placeholder = 'S
                 onClick={toggleDropdown}
                 className="w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 flex justify-between items-center dark:bg-blueish-600 dark:border-blueish-800 dark:text-blueish-100 dark:focus:ring-blue-300 dark:focus:border-blue-300"
             >
-                <span>{selected || placeholder}</span>
+                <span className={textColor ? textColor : "text-gray-700 dark:text-blueish-100"}>
+                    {selected || placeholder}
+                </span>
                 <svg
                     className={`w-5 h-5 transition-transform transform ${isOpen ? "rotate-180" : ""}`}
                     fill="none"
