@@ -25,6 +25,18 @@ interface CollectionApi {
     module_id: number;
 }
 
+interface HistoryApi {
+    id: number;
+    user_email: string;
+    exam_id: number;
+    module_id: number | null;
+    collection_id: number | null;
+    questions: number[];
+    answers: string[];
+    score: number;
+    datetime: string;
+}
+
 export interface Exam {
     id: number;
     name: string;
@@ -50,6 +62,18 @@ export interface Collection {
     name: string;
     examId: number;
     moduleId: number;
+}
+
+export interface History {
+    id: number;
+    userEmail: string;
+    examId: number;
+    moduleId: number | null;
+    collectionId: number | null;
+    questions: number[];
+    answers: string[];
+    score: number;
+    datetime: string;
 }
 
 
@@ -88,11 +112,12 @@ export async function fetchQuestionsCount(examId: number | null, moduleId: numbe
 }
 
 
-export async function fetchQuestions(examId: number | null, moduleId: number | null, collectionId: number | null, nQuestions: number): Promise<Question[]> {
-    let url = `${process.env.NEXT_PUBLIC_API_URL}/questions?limit=${nQuestions}`
+export async function fetchQuestions(examId: number | null, moduleId: number | null, collectionId: number | null, nQuestions: number | null, questionsFromHistory: number[] | null = null): Promise<Question[]> {
+    let url = nQuestions ? `${process.env.NEXT_PUBLIC_API_URL}/questions?limit=${nQuestions}` : `${process.env.NEXT_PUBLIC_API_URL}/questions?`
     examId && (url += `&exam_id=${examId}&`)
     moduleId && (url += `&module_id=${moduleId}&`)
     collectionId && (url += `&collection_id=${collectionId}&`)
+    questionsFromHistory && (url += `&questions=${questionsFromHistory.join(',')}`)
     const res = await fetch(url);
     return res.json().then((questions: QuestionApi[]) => {
         return questions.map(question => {
@@ -117,6 +142,46 @@ export async function fetchCollections(): Promise<Collection[]> {
                 name: collection.name,
                 examId: collection.exam_class_id,
                 moduleId: collection.module_id
+            }
+        })
+    })
+}
+
+
+export async function saveAnswers(user_email: string, exam_id: number, module_id: number | null, collection_id: number | null, questions: number[], answers: string[], score: number): Promise<void> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/history`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_email,
+            exam_id,
+            module_id,
+            collection_id,
+            questions,
+            answers,
+            score
+        })
+    });
+    return res.json();
+}
+
+
+export async function fetchHistory(userEmail: string): Promise<History[]> {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/history?user_email=${userEmail}`);
+    return res.json().then((histories: HistoryApi[]) => {
+        return histories.map(history => {
+            return {
+                id: history.id,
+                userEmail: history.user_email,
+                examId: history.exam_id,
+                moduleId: history.module_id,
+                collectionId: history.collection_id,
+                questions: history.questions,
+                answers: history.answers,
+                score: history.score,
+                datetime: history.datetime
             }
         })
     })

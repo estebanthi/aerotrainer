@@ -3,14 +3,23 @@
 import QCM from "@/app/ui/QCM";
 import {useSearchParams} from "next/navigation";
 import {useEffect, useState} from "react";
-import {fetchExams, fetchModules, fetchQuestions} from "@/app/lib/data";
+import {fetchExams, fetchModules, fetchQuestions, saveAnswers} from "@/app/lib/data";
 import {Question, Exam, Module} from "@/app/lib/data";
 import Button from "@/app/ui/Button";
 import Loading from "@/app/ui/Loading";
 import Link from "next/link";
+import {useSession} from "next-auth/react";
 
 
 export default function Page() {
+    const { data: session } = useSession()
+    const [loggedUser, setLoggedUser] = useState<string>("")
+
+    useEffect(() => {
+        if (session) {
+            setLoggedUser(session.user?.email || "")
+        }
+    }, [session])
 
     // API data
     const [questions, setQuestions] = useState<Question[]>([])
@@ -21,7 +30,8 @@ export default function Page() {
     const examId = searchParams.get('examId') ? parseInt(searchParams.get('examId') as string) : null
     const moduleId = searchParams.get('moduleId') ? parseInt(searchParams.get('moduleId') as string) : null
     const collectionId = searchParams.get('collectionId') ? parseInt(searchParams.get('collectionId') as string) : null
-    const nQuestions = searchParams.get('nQuestions') ? parseInt(searchParams.get('nQuestions') as string) : 0
+    const nQuestions = searchParams.get('nQuestions') ? parseInt(searchParams.get('nQuestions') as string) : null
+    const questionsFromHistory = searchParams.get('questions') ? searchParams.get('questions')?.split(',').map(Number) : null
 
     const exam = exams.find(exam => exam.id === examId)
     const module_ = modules.find(module => module.id === moduleId)
@@ -35,7 +45,7 @@ export default function Page() {
 
         async function fetchData() {
             try {
-                setQuestions(await fetchQuestions(examId, moduleId, collectionId, nQuestions))
+                examId && setQuestions(await fetchQuestions(examId, moduleId, collectionId, nQuestions, questionsFromHistory))
                 setExams(await fetchExams())
                 setModules(await fetchModules())
             } catch (err) {
@@ -44,7 +54,7 @@ export default function Page() {
         }
 
         fetchData()
-    }, [examId, moduleId, collectionId, nQuestions])
+    }, [examId, moduleId, collectionId, nQuestions, questionsFromHistory])
 
     const handleAnswerSelect = (noQuestion: number, selectedAnswer: string) => {
         if (selectedAnswer === "") {  // if the answer is unselected, remove it from the selected answers
@@ -60,7 +70,7 @@ export default function Page() {
         }
     };
 
-    const validateAnswers = () => {
+    const validateAnswers = async () => {
         window.scrollTo({top: 0, behavior: 'smooth'})
         setCorrectionMode(true)
     }
@@ -70,11 +80,27 @@ export default function Page() {
         setCorrectionMode(false)
     }
 
+    useEffect(() => {
+        async function saveAnswersToDB() {
+            if (loggedUser !== "") {
+                const questionsNumbers = questions.map(qcm => qcm.noQuestion)
+                const answers = questionsNumbers.map(questionNo => selectedAnswers[questionNo] || "")
+                const scorePercentage = Math.round(questionsNumbers.filter((questionNo) => selectedAnswers[questionNo] === questions.find(qcm => qcm.noQuestion === questionNo)?.goodAnswer).length / questionsNumbers.length * 100)
+                if (examId) await saveAnswers(loggedUser, examId, moduleId, collectionId, questionsNumbers, answers, scorePercentage)
+            }
+        }
+
+        if (correctionMode) {
+            saveAnswersToDB()
+        }
+    }, [correctionMode, selectedAnswers, questions, loggedUser, examId, moduleId, collectionId])
+
+
     return (
         <div className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
             <main className="flex flex-col gap-8 items-center">
                     {
-                        exams.length === 0 ? <Loading/> : (questions.length === 0 ? <p className="text-lg">Aucune question chargée, veuillez réessayer. Retournez à l&aposaccueil en cliquant <Link href="/" className="text-blue-600 dark:text-blueish-200">ici</Link>.</p> : <>
+                        exams.length === 0 ? <Loading/> : (questions.length === 0 ? <p className="text-lg">Aucune question chargée, veuillez réessayer. Retournez à l&apos;accueil en cliquant <Link href="/" className="text-blue-600 dark:text-blueish-200">ici</Link>.</p> : <>
 
                             {/* Display exam and module names */}
                             <h1 className="text-2xl sm:text-3xl">{exam?.name}</h1>

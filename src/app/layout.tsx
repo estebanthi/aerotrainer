@@ -5,6 +5,7 @@ import Link from "next/link";
 import React, {Suspense} from "react";
 import {auth, signIn, signOut} from "@/auth";
 import AuthWrapper from "@/app/auth_wrapper";
+import Image from "next/image";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -75,13 +76,13 @@ export default async function RootLayout({
                     type="submit"
                     className="bg-white text-gray-900 dark:bg-blueish-400 dark:text-blueish-100 px-4 py-2 rounded-md flex items-center gap-2 border border-gray-300"
                 >
-                    <img src="/google.svg" alt="Google" className="w-6 h-6 mr-2"/>
+                    <Image src="/google.svg" alt="Google" className="w-6 h-6 mr-2"/>
                     Connexion
                 </button>
             </form>}
         </nav>
     </header>
-        <Suspense fallback={<div>Chargement...</div>}>{children}</Suspense>
+        <Suspense>{children}</Suspense>
     </AuthWrapper>
     </body>
     </html>
