@@ -46,7 +46,13 @@ export default async function RootLayout({
                     Accueil
                 </span>
             </Link>
-            {session ? <form
+            {session ? <>
+                <Link href="/dashboard">
+                <span className="text-gray-700 hover:text-blue-500 transition-colors dark:text-blueish-100">
+                    Mon compte
+                </span>
+                </Link>
+                <form
                 action={async () => {
                     'use server';
                     await signOut({redirectTo: "/"});
@@ -56,12 +62,13 @@ export default async function RootLayout({
                     type="submit"
                     className="bg-white text-gray-900 dark:bg-blueish-400 dark:text-blueish-100 px-4 py-2 rounded-md flex items-center gap-2 border border-gray-300"
                 >
-                    Déconnexion
+                    Se déconnecter
                 </button>
-            </form> : <form
+            </form>
+            </> : <form
                 action={async () => {
                     "use server"
-                    await signIn("google", {redirectTo: "/"})
+                    await signIn("google", {redirectTo: "/dashboard"});
                 }}
             >
                 <button
