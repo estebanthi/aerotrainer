@@ -25,11 +25,6 @@ interface CollectionApi {
     module_id: number;
 }
 
-interface UserApi {
-    id: number;
-    username: string;
-}
-
 export interface Exam {
     id: number;
     name: string;
@@ -57,10 +52,6 @@ export interface Collection {
     moduleId: number;
 }
 
-export interface User {
-    id: string;
-    email: string;
-}
 
 export async function fetchExams(): Promise<Exam[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/exams`);
@@ -117,7 +108,6 @@ export async function fetchQuestions(examId: number | null, moduleId: number | n
     })
 }
 
-
 export async function fetchCollections(): Promise<Collection[]> {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/collections`);
     return res.json().then((collections: CollectionApi[]) => {
@@ -130,43 +120,4 @@ export async function fetchCollections(): Promise<Collection[]> {
             }
         })
     })
-}
-
-
-export async function login(username: string, password: string): Promise<User | null> {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    });
-    return res.status === 200 ? res.json().then((user: UserApi) => {
-        return {
-            id: user.id.toString(),
-            email: user.username
-        }
-    }) : null
-}
-
-
-export async function register(email: string, password: string): Promise<User | string> {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-    });
-    if (res.status === 200) {
-        return res.json().then((user: UserApi) => {
-            return {
-                id: user.id.toString(),
-                email: user.username
-            }
-        })
-    }
-    else {
-        throw Error(await res.json().then(error => error.error))
-    }
 }

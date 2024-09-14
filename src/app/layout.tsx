@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Link from "next/link";
-import {Suspense} from "react";
-import {auth, signOut} from "@/auth";
+import React, {Suspense} from "react";
+import {auth, signIn, signOut} from "@/auth";
 import AuthWrapper from "@/app/auth_wrapper";
 
 const geistSans = localFont({
@@ -52,17 +52,29 @@ export default async function RootLayout({
                     await signOut({redirectTo: "/"});
                 }}
             >
-                <button className="text-gray-700 hover:text-blue-300 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
+                <button
+                    type="submit"
+                    className="bg-white text-gray-900 dark:bg-blueish-400 dark:text-blueish-100 px-4 py-2 rounded-md flex items-center gap-2 border border-gray-300"
+                >
                     Déconnexion
                 </button>
-            </form> : <Link href="/login">
-                <span className="text-gray-700 hover:text-blue-300 transition-colors dark:text-blueish-100 bg-blue-500 text-white px-4 py-2 rounded-md dark:bg-blueish-300">
+            </form> : <form
+                action={async () => {
+                    "use server"
+                    await signIn("google", {redirectTo: "/"})
+                }}
+            >
+                <button
+                    type="submit"
+                    className="bg-white text-gray-900 dark:bg-blueish-400 dark:text-blueish-100 px-4 py-2 rounded-md flex items-center gap-2 border border-gray-300"
+                >
+                    <img src="/google.svg" alt="Google" className="w-6 h-6 mr-2"/>
                     Connexion
-                </span>
-            </Link>}
+                </button>
+            </form>}
         </nav>
     </header>
-    <Suspense fallback={<div>Chargement...</div>}>{children}</Suspense>
+        <Suspense fallback={<div>Chargement...</div>}>{children}</Suspense>
     </AuthWrapper>
     </body>
     </html>
