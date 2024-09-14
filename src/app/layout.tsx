@@ -37,7 +37,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900 dark:bg-blueish-500 dark:text-blueish-100`}
     >
     <AuthWrapper>
-    <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between dark:bg-blueish-400 dark:text-blueish-100">
+    <header className="flex flex-col items-center justify-between p-4 bg-white dark:bg-blueish-400 border-b border-gray-200 dark:border-blueish-600 sm:flex-row">
         <div className="flex items-center">
             <h1 className="text-2xl font-bold text-gray-900 dark:text-blueish-100">Aerotrainer</h1>
         </div>
@@ -76,7 +76,7 @@ export default async function RootLayout({
                     type="submit"
                     className="bg-white text-gray-900 dark:bg-blueish-400 dark:text-blueish-100 px-4 py-2 rounded-md flex items-center gap-2 border border-gray-300"
                 >
-                    <Image src="/google.svg" alt="Google" className="w-6 h-6 mr-2"/>
+                    <Image src="/google.svg" alt="Google" className="w-6 h-6 mr-2" width={24} height={24}/>
                     Connexion
                 </button>
             </form>}

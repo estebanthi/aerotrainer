@@ -41,37 +41,29 @@ export default function Page() {
         </div>
     }
 
+
     return (
         <div
             className="flex flex-col items-center justify-center p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
             <main className="flex flex-col gap-8 items-center">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-blueish-100">Connecté en tant que {session?.user?.email}</h1>
+                <h1 className="sm:text-3xl font-bold text-gray-900 dark:text-blueish-100 text-xl text-center">Connecté en tant que {session?.user?.email}</h1>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-blueish-100">Historique</h2>
-                <table className="table-auto">
-                    <thead>
-                    <tr>
-                        <th className="px-4 py-2">Examen</th>
-                        <th className="px-4 py-2">Module</th>
-                        <th className="px-4 py-2">Collection</th>
-                        <th className="px-4 py-2">Score (%)</th>
-                        <th className="px-4 py-2">Date</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {history.map((entry) => (
-                        <tr key={entry.id}>
-                            <td className="border px-4 py-2">{exams.find(exam => exam.id === entry.examId)?.name}</td>
-                            <td className="border px-4 py-2">{modules.find(module => module.id === entry.moduleId)?.name}</td>
-                            <td className="border px-4 py-2">{collections.find(collection => collection.id === entry.collectionId)?.name}</td>
-                            <td className="border px-4 py-2">{entry.score}</td>
-                            <td className="border px-4 py-2">{new Date(entry.datetime).toLocaleString()}</td>
-                            <td className="border px-4 py-2">
-                                <ReplayButton history={entry}>Rejouer</ReplayButton>
-                            </td>
-                        </tr>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {history.map((history) => (
+                        <div key={history.id} className="flex flex-col gap-2 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg justify-between">
+                            <div className="flex flex-col gap-1">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-blueish-100">{exams.find(exam => exam.id === history.examId)?.name}</h3>
+                            <h4 className="text-md font-bold text-gray-900 dark:text-blueish-100">{modules.find(module => module.id === history.moduleId)?.name}</h4>
+                            <h5 className="text-sm font-bold text-gray-900 dark:text-blueish-100">{collections.find(collection => collection.id === history.collectionId)?.name}</h5>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                            <p className="text-sm text-gray-900 dark:text-blueish-100">Score : {history.score}%</p>
+                            <p className="text-sm text-gray-900 dark:text-blueish-100">{new Date(history.datetime).toLocaleString()}</p>
+                                <ReplayButton history={history}>Rejouer</ReplayButton>
+                            </div>
+                        </div>
                     ))}
-                    </tbody>
-                </table>
+                </div>
             </main>
         </div>
     )
